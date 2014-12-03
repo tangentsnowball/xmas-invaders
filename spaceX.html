@@ -144,7 +144,7 @@
 												height: 32,
 												tiles: [{x: 4, y: 76}, {x: 60, y: 76}]
 						},
-						flyingSaucer:		{	id: "flyingSaucer",										
+						flyingSaucer:		{	id: "flyingSaucer",
 												width: 48,
 												height: 28,
 												tiles: [{x: 4, y: 128}]
@@ -197,7 +197,7 @@
 						bunkerBottomRight:	{	id: "bunkerBottomRight",
 												width: 24,
 												height: 24,
-												tiles: [{x: 4, y: 344}, {x: 32, y: 344}, {x: 60, y: 344}, {x: 88, y: 344}]								
+												tiles: [{x: 4, y: 344}, {x: 32, y: 344}, {x: 60, y: 344}, {x: 88, y: 344}]
 						}
 					};					
 					
@@ -244,13 +244,13 @@
 						this.base = new ship(e);
 						for (var i in this.base) 
 						{
-							if (i == "base") continue;								
+							if (i == "base") continue;
 							this[i] = this.base[i];
 						}
 						
 						this.typeOf = "flyingSaucerShip";
 					};
-					
+
 					var bullet = function(e) {
 						this.base = new sprite(e);
 						for (var i in this.base) {this[i] = this.base[i];}
@@ -355,6 +355,7 @@
 								if (a.state == "striked")
 								{
 									this.arrAliens.splice(i, 1);
+									console.log('alien dead');
 									i = 0;
 									continue;
 								}
@@ -395,7 +396,7 @@
 
 								a.x += upd.x;
 								a.y += upd.y;								
-								a.tileId += upd.tile; 
+								a.tileId += upd.tile;
 								if (a.tileId >= a.sprite.tiles.length)
 									a.tileId = 0;
 								
@@ -543,7 +544,7 @@
 							this.score = 0;
 							
 							this.cannon = new ship({	sprite: sprites.cannon, 
-														x: (canvas.width/2) - (sprites.cannon.width/2), 
+														x: (canvas.width/2) - (sprites.cannon.width/2),
 														y: (canvas.height-55) - sprites.cannon.height });
 						},
 						
@@ -566,14 +567,14 @@
 							}
 
 							// update for window resizing
-							this.cannon.y = (canvas.height-55) - sprites.cannon.height;						
+							this.cannon.y = (canvas.height-55) - sprites.cannon.height;
 							context.drawImage(img, this.cannon.sprite.tiles[this.cannon.tileId].x, this.cannon.sprite.tiles[this.cannon.tileId].y, this.cannon.sprite.width, this.cannon.sprite.height, this.cannon.x, this.cannon.y, this.cannon.sprite.width, this.cannon.sprite.height);
 						},
 						
 						drawCannonBullet: function() {		
 							// cannonBullet exists
 							if (this.cannonBullet) {
-								var bulletOnScreen = true;							
+								var bulletOnScreen = true;
 								this.cannonBullet.y -= this.cannonBulletSpeed;
 								
 								// collision with canvas upper border
@@ -647,6 +648,7 @@
 							else if (this.cannonFire)
 							{
 								if (!isGameOver) {
+                                    console.log('fired');
 									this.cannonBullet = new bullet({	sprite: sprites.cannonBullet, 
 																		x: this.cannon.x+(this.cannon.sprite.width/2)-sprites.cannonBullet.width/2, 
 																		y: this.cannon.y	});
@@ -722,7 +724,7 @@
 								
 							lives.lineInterrupts.sort(this.sortInterrupts);
 
-							for(var i = 0; i < this.lineInterrupts.length; i++) {		
+							for(var i = 0; i < this.lineInterrupts.length; i++) {
 								rectWidth = this.lineInterrupts[i] - rectX;
 								context.fillRect(rectX, this.lineY, rectWidth, this.lineHeight);
 								rectX = this.lineInterrupts[i]+sprites.alienBullet.width;									
@@ -1038,7 +1040,7 @@
 								//var diff = drawStart - startTime;
 
 								// update frame rate
-								//if (diff > 1000/33) 
+								//if (diff > 1000/33)
 								//{
 									// animation
 									gameLoop();
