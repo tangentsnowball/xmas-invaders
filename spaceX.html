@@ -199,8 +199,13 @@
 												height: 24,
 												tiles: [{x: 4, y: 344}, {x: 32, y: 344}, {x: 60, y: 344}, {x: 88, y: 344}]
 						}
-					};					
-					
+					};		
+
+                    var sounds = {
+                        aliendies:          {   sfx: "sfx/dspodth3.wav" },
+                        shot:               {   sfx: "sfx/dspistol.wav" }
+                    }
+
 					var sprite = function(e) {
 						this.typeOf = "sprite";
 						this.sprite = e.sprite;
@@ -336,7 +341,7 @@
 								{
 									this.arrAliens.push(new ship({	sprite: sprite, 
 																	x: (a*this.alienSquareWidth)+(this.alienSquareWidth-sprite.width)/2, 
-																	y: r*this.alienSquareHeight+this.alienInitialY, 
+																	y: r*this.alienSquareHeight+this.alienInitialY,
 																	points: points	}));
 								}							
 							}
@@ -354,12 +359,14 @@
 								
 								if (a.state == "striked")
 								{
+									//console.log('alien dead');
+									var snd = new Audio(sounds.aliendies.sfx);
+									snd.play();
 									this.arrAliens.splice(i, 1);
-									console.log('alien dead');
 									i = 0;
 									continue;
 								}
-								
+
 								// check alien collision with canvas borders
 								if (a.touchBorder() && !this.alienBorderCollision)
 								{			
@@ -648,9 +655,11 @@
 							else if (this.cannonFire)
 							{
 								if (!isGameOver) {
-                                    console.log('fired');
-									this.cannonBullet = new bullet({	sprite: sprites.cannonBullet, 
-																		x: this.cannon.x+(this.cannon.sprite.width/2)-sprites.cannonBullet.width/2, 
+                                    //console.log('fired');
+									var snd = new Audio(sounds.shot.sfx);
+									snd.play();
+									this.cannonBullet = new bullet({	sprite: sprites.cannonBullet,
+																		x: this.cannon.x+(this.cannon.sprite.width/2)-sprites.cannonBullet.width/2,
 																		y: this.cannon.y	});
 								}
 							}
