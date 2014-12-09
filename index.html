@@ -90,8 +90,12 @@
 				  to { background-position:top right; }  
 				}
 				
-				#guy{position:absolute;top:0;left:0;width:100%;height:100%;background:url(guy.png) no-repeat 0 0;}
+				#guy{position:absolute;top:0;left:0;width:100%;height:100%;background:url(guy.png) no-repeat 0 0;transition:background-position .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+							-webkit-transition:background-position .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+							-moz-transition:background-position .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+							-o-transition:background-position .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
 				
+					#guy.bounce{background-position-y:-960px;background-position-x:-300px}
 				
 				
 				
@@ -119,22 +123,22 @@
 			p {font-family: 'Press Start 2P', helvetica, sans-serif;}
 			p.text {display: block; color: #fff; font-family: 'Press Start 2P', helvetica, sans-serif; font-weight: normal; font-size: 1.3em; text-transform: uppercase; padding: 0; margin: 0;}
 			p.menuText {line-height: 2em;}
-			p.instructionsText {padding-bottom: 0.5em;}		
+			p.instructionsText {padding-bottom: 1.5em;}		
 			p.scoreText {padding-bottom: 1em;} 
 			p.scoreAdvanceText {line-height: 1.5em;} 
 			p.creditText, p.livesText {padding: 0 1em 0.5em 0;}
 			p.menuHeaderText {font-weight: bold; font-size: 2em; line-height: 3em;}
 			p.smallText {font-size: 0.8em; line-height: 2em;}
 			p#insertCoins {line-height: 2em;margin-top: 2em;}
-			p#copyright {padding-bottom: 0.5em;}
+			p#copyright {padding-bottom: 2em;}
 			p#copyright a {text-decoration: none; color: #fff;}
 			div.field {display: block; position: absolute; text-align: center;}			
 			div.livesField {padding-left: 1em;}
 			div.scoreField {padding: 1em;}
-			div.menuFieldFrame {padding: 3em; border: 3px solid #0f0; background: #000;}
-			div.instructionsFieldFrame {padding: 3em; border: 3px solid #0f0; background: #000; text-align: left;}
+			div.menuFieldFrame {padding: 3em; border: 3px solid #ddc290; background: #000;}
+			div.instructionsFieldFrame {padding: 3em; border: 3px solid #ddc290; background: #000; text-align: left;}
 			.clickText {cursor: pointer;}
-			p#copyright a:hover, .clickText:hover {color: #0f0;}
+			p#copyright a:hover, .clickText:hover {color: #ddc290;}
 
 			/*===================================
 				"play" and alien intro animations
@@ -651,6 +655,7 @@
 					//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 					// cannon 
 					//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+					
 					var human = {
 						cannon: null, 
 						cannonBullet: null, 
@@ -658,15 +663,14 @@
 						cannonFire: null,						
 						cannonSpeed: 8,						
 						cannonBulletSpeed: 10,
-						score: 0,
 						credit: 0,
 						
 						init: function() {
 							this.moveCannon = "N";
 							this.cannonFire = false;
 							this.cannonBullet = null;
-							this.score = 0;
-							
+							if(this.score>0)this.score = this.score;
+							else this.score = 0;
 							this.cannon = new ship({	sprite: sprites.cannon, 
 														x: (canvas.width/2) - (sprites.cannon.width/2),
 														y: (canvas.height-55) - sprites.cannon.height });
@@ -726,6 +730,7 @@
 								// collision with alien
 								if (bulletOnScreen) {								
 									var a;
+									var allAliensDead = 0;
 									for (var i = 0; i < aliens.arrAliens.length; i++)
 									{
 										a = aliens.arrAliens[i];
@@ -736,7 +741,9 @@
 											bulletOnScreen = false;
 											break;
 										}
+										if(a.state=="alive")allAliensDead++;
 									}
+									if(allAliensDead==0)screens.game();
 								}
 								
 								// collision with bunker
@@ -846,7 +853,7 @@
 
 						drawLine: function() {
 							// draw a line (with interrupts due to alienBullet fall)
-							context.fillStyle = "rgba(0,255,0,255)";
+							context.fillStyle = "rgba(220,196,144,255)";
 							var	rectX = 0,
 								rectWidth = canvas.width;
 								
@@ -1145,7 +1152,7 @@
 							// score
 							var txtArea = new textHelper.textArea({	cls: "field scoreField", 
 																	childs: [	
-																		textHelper.writeText({cls: "text scoreText", text: "score <1>"}),
+																		textHelper.writeText({cls: "text scoreText", text: "P1 score"}),
 																		textHelper.writeText({cls: "text scoreText", id: "scorePlayer1", text: textHelper.pad(human.score, 4, '0', 'L')})
 																	],
 																	appendTo: container,
@@ -1227,7 +1234,7 @@
 						txtArea = new textHelper.textArea({	
 							cls: "field scoreAdvanceTableField", 
 							childs: [
-								textHelper.writeText({cls: "text scoreAdvanceText", text: "*score advance table*"}),
+								textHelper.writeText({cls: "text scoreAdvanceText", text: "*scoring*"}),
 								textHelper.writeText({
 									innerhtml:	"<ul id='scoreAdvanceTable'>" +
 												"<li><span><span id='span_score_mystery'></span></span><p id='score_mystery' class='text scoreAdvanceText'>= ? mystery</p></li>" +
@@ -1327,8 +1334,8 @@
 									innerhtml: 	"<ol>" +
 												"<li>press 'c' or click 'insert coin(s)'</li>" +
 												"<li>press 'play' to start game</li>" +
-												"<li>left/right keys to move cannon</li>" +
-												"<li>'spacebar' to shot</li>" +
+												"<li>left/right keys to move the tree</li>" +
+												"<li>'spacebar' to shoot</li>" +
 												"</ol>"
 								}),							
 								textHelper.writeText({cls: "text clickText menuText", text: "close", onclick: function(){textHelper.removeTextArea("divInstructions");}}) ],
@@ -1346,8 +1353,8 @@
 								cls: "field menuFieldFrame", 
 								childs: [	
 									textHelper.writeText({cls: "text menuHeaderText", text: "game over"}),
-									//textHelper.writeText({cls: "text clickText menuText", text: "play again", onclick: checkcredit})
-									textHelper.writeText({cls: "text clickText menuText", text: "play again", onclick: microSpaceInvaders})
+									textHelper.writeText({id: "copyright", cls: "text", innerhtml: "<a href='https://secure.savethechildren.org.uk/donate/single?sourcecode=W14011113' target='_blank'>Donate to Save the Children?</a>"}),
+									textHelper.writeText({cls: "text clickText menuText", text: "or play again?", onclick: microSpaceInvaders})
 								],
 								appendTo: container,
 								position: "centerHV" 
@@ -1368,8 +1375,9 @@
 							_instructions();
 						},
 						game: function() {
+							document.getElementById("guy").setAttribute("class", "bounce");
 							cancelAnimationFrame(runningAnimation);
-							_game();
+							setTimeout(function(){document.getElementById('guy').style.backgroundPositionY="-960px";document.getElementById('guy').style.backgroundPositionX="-300px";_game()}, 500);
 						},
 						gameOver: function() {
 							cancelAnimationFrame(runningAnimation);
@@ -1407,7 +1415,7 @@
 		</script>
 	</head>
 	<body>
-    	<div id="guy" style="background-position-x: -300px;background-position-y: -420px;"></div>
+    	<div id="guy" style=""></div>
 		<div id="game"></div>
         <footer>
         	
@@ -1434,9 +1442,21 @@
                 alt="shopify traffic stats"></a></div>
             </noscript>
             <!-- End of StatCounter Code for Default Guide -->
-            </strong><a href="https://www.facebook.com/sharer/sharer.php?app_id=255624304475985&u=https%3A%2F%2Ftangentsnowball.com%2F&display=popup&ref=plugin" id="facebook" class="share" target="_blank"></a><a href="https://twitter.com/intent/tweet?original_referer=http%3A%2F%2Ftangentsnowball.com&related=Save%20The%20Children!&text=&tw_p=tweetbutton&url=http%3A%2F%2Ftangentsnowball.com" id="twitter" class="share" target="_blank"></a>
+            </strong><a href="https://www.facebook.com/sharer/sharer.php?app_id=255624304475985&u=https%3A%2F%2Fxmas.tangentsnowball.com%2F&display=popup&ref=plugin" id="facebook" class="share" target="_blank"></a><a href="https://twitter.com/intent/tweet?original_referer=http%3A%2F%2Fxmas.tangentsnowball.com&related=Save%20The%20Children!&text=&tw_p=tweetbutton&url=http%3A%2F%2Ftangentsnowball.com" id="twitter" class="share" target="_blank"></a>
             </p>
         	
         </footer>
+        <script type="text/javascript">
+		  var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-7013260-6']);
+		  _gaq.push(['_setAllowLinker', true]);
+		  _gaq.push(['_trackPageview']);
+		
+		  (function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
+		</script>
 	</body>
 </html>
