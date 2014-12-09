@@ -3,7 +3,10 @@
   <head>
 		<title>Space Invaders</title>
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-		<script src="modernizr.custom.85978.js"></script>
+		
+        <script src="modernizr.custom.85978.js"></script>
+        <script src="howler.min.js"></script>
+
         <link rel="icon" type="image/png" href="favicon.png">
 		<style type="text/css">
 			footer{position:absolute;bottom:0;left:0;width:100%;background:#f87858;font-family: helvetica, arial, sans-serif; color:#fff;font-size:.85em;}
@@ -307,13 +310,16 @@
                         aliendies: "sfx/aliendies.wav",
                         playershoots: "sfx/playershoots.wav",
                         playerdies: "sfx/playerdies.wav",
-                        saucer: "sfx/ufo_lowpitch.wav",
+                        saucer: "sfx/ufo_highpitch.wav",
                     }
 
                     //preload sfx
                     if(soundswork){
                         for(var index in sounds){
-                            sounds[index] = new Audio(sounds[index]);
+                            //sounds[index] = new Audio(sounds[index]);
+                            sounds[index] = new Howl({
+                                urls: [sounds[index]]
+                            });
                         }
                     }
 
@@ -1373,7 +1379,7 @@
 						while (container.hasChildNodes())
 							container.removeChild(container.lastChild);
 					};
-					
+
 					var screens = {
 						intro: function() {
 							_intro();
