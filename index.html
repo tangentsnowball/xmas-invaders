@@ -1416,6 +1416,10 @@
 				document.onreadystatechange = function() {
 					if (document.readyState === "complete") {
 						microSpaceInvaders();
+						document.getElementById("twitter").onclick=function(){
+							e=document.getElementById("twitter");
+							e.href=e.href.slice(0,e.href.indexOf("&text="))+"&text=I%20scored%20"+Number(document.getElementById("scorePlayer1").innerHTML)+"!%20"+e.href.slice(e.href.indexOf("Save%20the%20earth"));	
+						}
 					}
 				};
 
