@@ -97,7 +97,7 @@
 							-moz-transition:background-position .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 							-o-transition:background-position .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
 				
-					#guy.bounce{background-position-y:-960px;background-position-x:-300px}
+					#guy.bounce{background-position:-300px -960px;}
 				
 				#logo{position:absolute; top:20px; right:20px;}
 				
@@ -502,8 +502,9 @@
 							
 							upd.x = moveX;
 							upd.y = moveY;
-							upd.guyX = Number(document.getElementById('guy').style.backgroundPositionX.slice(0,-2))+moveX;
-							upd.guyY = Number(document.getElementById('guy').style.backgroundPositionY.slice(0,-2))+moveY;
+							upd.coords = String(document.getElementById('guy').style.backgroundPosition).split("px");
+							upd.guyX = Number(upd.coords[0])+moveX;
+							upd.guyY = Number(upd.coords[1].slice(1))+moveY;
 							return upd;
 						},
 						
@@ -524,8 +525,8 @@
 								
 								context.drawImage(img, a.sprite.tiles[a.tileId].x, a.sprite.tiles[a.tileId].y, a.sprite.width, a.sprite.height, a.x, a.y, a.sprite.width, a.sprite.height);
 							}
-							document.getElementById('guy').style.backgroundPositionX = upd.guyX +"px";
-							document.getElementById('guy').style.backgroundPositionY = upd.guyY +"px";
+							document.getElementById('guy').style.backgroundPosition = upd.guyX +"px "+ upd.guyY +"px";
+							console.log(upd.guyX +"px "+ upd.guyY +"px");
 						},
 						
 						updateFlyingSaucer: function() {
@@ -1385,7 +1386,7 @@
 						game: function() {
 							document.getElementById("guy").setAttribute("class", "bounce");
 							cancelAnimationFrame(runningAnimation);
-							setTimeout(function(){document.getElementById('guy').style.backgroundPositionY="-960px";document.getElementById('guy').style.backgroundPositionX="-300px";_game()}, 500);
+							setTimeout(function(){document.getElementById('guy').style.backgroundPosition="-300px -960px";_game()}, 500);
 						},
 						gameOver: function() {
 							cancelAnimationFrame(runningAnimation);
