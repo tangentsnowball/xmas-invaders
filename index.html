@@ -3,7 +3,10 @@
   <head>
 		<title>Space Invaders</title>
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-		<script src="modernizr.custom.85978.js"></script>
+		
+        <script src="modernizr.custom.85978.js"></script>
+        <script src="howler.min.js"></script>
+
         <link rel="icon" type="image/png" href="favicon.png">
 		<style type="text/css">
 			footer{position:absolute;bottom:0;left:0;width:100%;background:#f87858;font-family: helvetica, arial, sans-serif; color:#fff;font-size:.85em;}
@@ -303,11 +306,23 @@
 					};		
 
                     var sounds = {
-                        alienshoots:        {   sfx: "sfx/alienshoots.wav" },
-                        aliendies:          {   sfx: "sfx/aliendies.wav" },
-                        playershoots:       {   sfx: "sfx/playershoots.wav" },
-                        playerdies:         {   sfx: "sfx/playerdies.wav" },
+                        alienshoots: "sfx/alienshoots.wav",
+                        aliendies: "sfx/aliendies.wav",
+                        playershoots: "sfx/playershoots.wav",
+                        playerdies: "sfx/playerdies.wav",
+                        saucer: "sfx/ufo_highpitch.wav",
                     }
+
+                    //preload sfx
+                    if(soundswork){
+                        for(var index in sounds){
+                            //sounds[index] = new Audio(sounds[index]);
+                            sounds[index] = new Howl({
+                                urls: [sounds[index]]
+                            });
+                        }
+                    }
+
 
 					var sprite = function(e) {
 						this.typeOf = "sprite";
@@ -467,8 +482,7 @@
 								{
 									//console.log('alien dead');
 									if(!isGameOver && soundswork){
-    									var snd = new Audio(sounds.aliendies.sfx);
-    									snd.play();
+    									sounds.aliendies.play();
                                     }
 									this.arrAliens.splice(i, 1);
 									i = 0;
@@ -526,22 +540,30 @@
 						},
 						
 						drawFlyingSaucer: function(fs) {
-							var time = new Date().getTime();														
+							var time = new Date().getTime();
 							if (!this.flyingSaucer)
 							{
 								if (time - this.flyingSaucerTimer >= 10000)
 								{
-									this.flyingSaucer = new flyingSaucerShip({	sprite: sprites.flyingSaucer, 
-																				x: canvas.width, 
-																				y: this.flyingSaucerInitialY, 
+									this.flyingSaucer = new flyingSaucerShip({	sprite: sprites.flyingSaucer,
+																				x: canvas.width,
+																				y: this.flyingSaucerInitialY,
 																				points: 100	});
 								}
 							}
 							else
 							{
-								if (this.flyingSaucer.state == "striked")
+                                //console.log('flying saucer');
+								if(!isGameOver && soundswork){
+									sounds.saucer.play();
+                                }
+
+								if (this.flyingSaucer.state == "striked"){
 									this.flyingSaucer.sprite = sprites.saucerExplosion;
-								
+    								if(!isGameOver && soundswork){
+    									sounds.aliendies.play();
+                                    }
+                                }
 								if (this.flyingSaucer.x <= -sprites.flyingSaucer.width || fs)
 								{
 									this.flyingSaucer = null;
@@ -589,8 +611,7 @@
 									{									
                                         //console.log('player shot');
     									if(!isGameOver && soundswork){
-        									var snd = new Audio(sounds.playerdies.sfx);
-        									snd.play();
+        									sounds.playerdies.play();
                                         }
 										lives.nLives--;
 										if (lives.nLives == 0) human.cannon.tileId++;
@@ -640,8 +661,7 @@
 								if (this.arrAliens[alienIdx]) {
                                     //console.log('new shot');
 									if(!isGameOver && soundswork){
-    									var snd = new Audio(sounds.alienshoots.sfx);
-    	   								snd.play();
+    	   								sounds.alienshoots.play();
                                     }
 									this.alienBullet = new bullet({	sprite: sprites.alienBullet,
 																	x: this.arrAliens[alienIdx].x+this.arrAliens[alienIdx].sprite.width/2, 
@@ -779,8 +799,7 @@
 								if (!isGameOver) {
                                     //console.log('fired');
 									if(!isGameOver && soundswork){
-    									var snd = new Audio(sounds.playershoots.sfx);
-    									snd.play();
+    									sounds.playershoots.play();
                                     }
 									this.cannonBullet = new bullet({	sprite: sprites.cannonBullet,
 																		x: this.cannon.x+(this.cannon.sprite.width/2)-sprites.cannonBullet.width/2,
@@ -1126,10 +1145,6 @@
 							human.credit--;
 							screens.game();
 						}
-						else {
-                            console.log('no credit');
-                        }
-
 					};
 					
 					var _game = function() {
@@ -1195,7 +1210,7 @@
 					}
 					
 					var _intro = function() {
-                        console.log('_intro');
+                        //console.log('_intro');
 						clearScreen();
 						setCanvas();
 						resizeCanvas();					
@@ -1345,7 +1360,7 @@
 					var _gameOver = function() {
 						// game over splash screen
 						if (!$("#divGameOver")) {
-                            console.log('_gameOver');
+                            //console.log('_gameOver');
 							var txtArea = new textHelper.textArea({	
 								id: "divGameOver",
 								cls: "field menuFieldFrame", 
@@ -1364,7 +1379,7 @@
 						while (container.hasChildNodes())
 							container.removeChild(container.lastChild);
 					};
-					
+
 					var screens = {
 						intro: function() {
 							_intro();
@@ -1384,7 +1399,7 @@
 					};
 					
 					var initGame = function() {
-                        console.log('initGame');
+                        //console.log('initGame');
 						human.credit = 0;
 						screens.intro();
 					};
